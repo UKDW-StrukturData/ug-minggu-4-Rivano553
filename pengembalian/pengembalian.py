@@ -7,20 +7,29 @@ def process_pengembalian(buku, mahasiswa):
         # 1. Validasi mahasiswa
         # TODO: melakukan pengecekan apakah nama mahasiswa ada dalam dictionary buku, kemudian
         #    return (judul, "Gagal", "Mahasiswa tidak terdaftar")
+        if nama not in mahasiswa:
+            return(judul, "Gagal", "Mahasiswa tidak terdaftar" )
 
         # 2. Validasi judul buku
         # TODO: melakukan pengecekan apakah judul ada dalam dictionary buku, kemudian
         #    return (judul, "Gagal", "Judul tidak ditemukan")
+        if judul not in  buku:
+            return (judul, "Gagal", "Judul tidak ditemukan")
 
         # 3. TODO: cek apakah buku tercatat sedang dipinjam oleh mahasiswa
         # hint: gunakan if judul in mahasiswa[nama].get("pinjaman", [])
         # jika iya: hapus dari daftar pinjaman
         # lalu tambahkan stok buku +1
         # jika status buku sebelumnya "Kosong", ubah menjadi "Tersedia"
-            # return (judul, "Berhasil", None)
-
-        # 4. Jika tidak ada di daftar pinjaman
-        return (judul, "Gagal", "Tidak tercatat sebagai pinjaman")
+        # return (judul, "Berhasil", None)
+        if judul in mahasiswa[nama].get("pinjaman", []):
+            mahasiswa[nama]["pinjaman"].remove
+            buku[judul]["stok"] += 1
+            if  buku[judul]["status"] == "Kosong":
+                buku[judul]["status"] = "Tersedia"
+                return (judul, "Berhasil", None)
+        else:
+            return (judul, "Gagal", "Tidak tercatat sebagai pinjaman")
 
     for nama, data in mahasiswa.items():
         hasil_berhasil, hasil_gagal = [], []
@@ -80,7 +89,8 @@ def print_result(result):
             print(f"  Gagal diproses         : {g[0]} ({g[1]})")
         if not item["berhasil"] and not item["gagal"]:
             print("  Tidak ada buku yang dikembalikan.")
-
+    print("=== Data Buku Terbaru ===")
+    # print(f"{buku[judul]}, | stok: {buku[judul]["stok"]} | ststus: {buku[judul]["status"]}")
 
 def run_terminal():
     for tc in test_cases:
@@ -92,3 +102,5 @@ def run_terminal():
 if __name__ == "__main__":
     run_terminal()
     print("\n[INFO] Untuk UI Streamlit, jalankan: streamlit run app.py")
+
+
